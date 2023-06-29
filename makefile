@@ -1,13 +1,13 @@
 test:
-	pytest
-
-coverage:
 	coverage run -m pytest
 	coverage report
 
-coverage-html:
+test-html:
 	coverage run -m pytest
-	coverage html
+	coverage report
+
+test-no-coverage:
+	pytest
 
 schema:
 	strawberry export-schema schema_export:schema > schema.graphql

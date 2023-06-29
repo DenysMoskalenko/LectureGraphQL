@@ -5,7 +5,6 @@ from app.graphql.authors.types import AuthorAddInput, AuthorType
 from app.graphql.converters import strawberry_to_dict
 from tests.conftest import TestBaseClientDBClass
 from tests.factories import AuthorFactory
-from tests.graphql.test_books import create_test_book
 
 
 async def create_test_author(*, name: str | None = None) -> AuthorType:
@@ -75,8 +74,10 @@ class TestAuthorGet(TestBaseClientDBClass):
         assert response_data == strawberry_to_dict(author, exclude={'books'}) | {'books': []}
 
     async def test_get_with_books(self):
+        from tests.graphql.test_books import create_test_book
+
         author = await create_test_author()
-        book1, book2 = await create_test_book(author.id), await create_test_book(author.id)
+        book1, book2 = await create_test_book(author_id=author.id), await create_test_book(author_id=author.id)
 
         response = await self.client.post(
             '/graphql', json={'query': self.QUERY, 'variables': {'author_id': author.id}}
