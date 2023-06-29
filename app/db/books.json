@@ -1,0 +1,27 @@
+[
+  {
+    "id": 1,
+    "author_id": 1,
+    "name": "1984"
+  },
+  {
+    "id": 2,
+    "author_id": 1,
+    "name": "Animal Farm: A Fairy Story"
+  },
+  {
+    "id": 3,
+    "author_id": 2,
+    "name": "The Fellowship of the Ring"
+  },
+  {
+    "id": 4,
+    "author_id": 2,
+    "name": "The Two Towers"
+  },
+  {
+    "id": 5,
+    "author_id": 2,
+    "name": "The Return of the King"
+  }
+]

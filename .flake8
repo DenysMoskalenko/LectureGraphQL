@@ -1,0 +1,9 @@
+[flake8]
+max-line-length = 120
+exclude = migrations, env
+
+inline-quotes = single
+multiline-quotes = double
+
+import-order-style = google
+application_import_names = app, tests

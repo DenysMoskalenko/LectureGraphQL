@@ -1,0 +1,35 @@
+[tool.poetry]
+name = "grapthql-lecture"
+version = "0.1.0"
+description = "GraphQL Lecture Code"
+authors = ["DenysMoskalenko <denys.moskalenko@nixs.com>"]
+readme = "README.md"
+
+[tool.poetry.group.dev.dependencies]
+flake8 = "^6.0.0"
+flake8-bugbear = "^23.6.5"
+flake8-import-order = "^0.18.1"
+flake8-print = "^5.0.0"
+flake8-quotes = "^3.3.2"
+coverage = "^7.2.1"
+faker = "^18.11.2"
+pytest = "^7.3.2"
+pytest-asyncio = "^0.21.0"
+
+[tool.poetry.dependencies]
+aiofiles = "^23.1.0"
+python = "^3.11"
+fastapi = "^0.98.0"
+httpx = "^0.24.1"
+pydantic = { version = "1.10.9", extras = ["dotenv"] }
+strawberry-graphql = {extras = ["fastapi"], version = "^0.192.0"}
+uvicorn = "^0.22.0"
+
+[tool.poetry.group.export.dependencies]
+rich = "^13.4.2"
+typer = "^0.9.0"
+libcst = "^1.0.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
