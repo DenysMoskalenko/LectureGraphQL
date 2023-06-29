@@ -1,6 +1,6 @@
 import logging
 
-from fastapi import FastAPI
+from fastapi import Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import strawberry
 from strawberry.extensions import ParserCache, QueryDepthLimiter, ValidationCache
@@ -8,6 +8,7 @@ from strawberry.fastapi import GraphQLRouter
 from strawberry.schema.config import StrawberryConfig
 from strawberry.tools import merge_types
 
+from app.core.config import get_settings, Settings
 from app.graphql.authors.queries import AuthorsMutation, AuthorsQuery
 from app.graphql.books.queries import BooksMutation, BooksQuery
 
@@ -17,11 +18,9 @@ logging.basicConfig(
 )
 
 
-async def _get_context() -> dict:
-    from app.core.config import get_settings
-
+async def _get_context(settings: Settings = Depends(get_settings)) -> dict:
     return {
-        'settings': get_settings(),
+        'settings': settings,
     }
 
 
@@ -42,13 +41,13 @@ def create_app() -> FastAPI:
 
 
 def create_graphql_schema() -> strawberry.Schema:
-    extensions = [
+    extensions = (
         QueryDepthLimiter(max_depth=3),
         ValidationCache(maxsize=256),
         ParserCache(maxsize=256),
-        # MaskErrors(),  # Hide error description. Debug=False
         # ApolloTracingExtension,  # Enable performance tracing
-    ]
+        # MaskErrors(),  # Hide error description, like "Debug=False"
+    )
 
     queries = (AuthorsQuery, BooksQuery)
     mutations = (AuthorsMutation, BooksMutation)
