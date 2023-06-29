@@ -3,11 +3,11 @@ import os
 from typing import Any
 
 from aiofiles import open
-import strawberry
 
 from app.core.config import Settings
 from app.exceptions import AlreadyExistError, NotFoundError
 from app.graphql.authors.types import AuthorType
+from app.graphql.converters import strawberry_to_dict
 
 
 def _load_author_type(author: dict[str, Any]) -> AuthorType:
@@ -30,20 +30,28 @@ class AuthorService:
 
     async def get_authors(self) -> list[AuthorType]:
         async with open(self.__file_path, 'r') as file:
-            authors = json.loads(await file.read())
+            content = await file.read()
+            authors = json.loads(content) if content else []
 
-        return [AuthorType(id=a['id'], name=a['name']) for a in authors]
+        authors = [_load_author_type(a) for a in authors]
+        return authors
 
     async def get_author_by_id(self, author_id: int) -> AuthorType:
         author = _extract_author(author_id, authors=await self.get_authors())
         return author
 
-    async def create_author(self, name: str):
+    async def create_author(self, name: str) -> AuthorType:
         await self._validate_author(name)
+        authors = await self.get_authors()
 
-        author = AuthorType(id=await self._get_next_id(), name=name)
-        async with open(self.__file_path, 'a') as file:
-            await file.write(json.dumps(strawberry.asdict(author)))
+        new_author = AuthorType(id=await self._get_next_id(), name=name)
+        authors.append(new_author)
+
+        authors_data = [strawberry_to_dict(a, exclude={'books'}) for a in authors]
+        async with open(self.__file_path, 'w') as file:
+            await file.write(json.dumps(authors_data))
+
+        return new_author
 
     async def _validate_author(self, name: str) -> None:
         authors = await self.get_authors()
@@ -52,13 +60,17 @@ class AuthorService:
                 raise AlreadyExistError('Author with this name already exist')
 
     async def _get_next_id(self) -> int:
-        last_id = max(a.id for a in await self.get_authors())
+        authors = await self.get_authors()
+        if not authors:
+            return 1
+
+        last_id = max(a.id for a in authors)
         return last_id + 1
 
     async def delete_author(self, author_id: int) -> None:
         authors = await self.get_authors()
         author = _extract_author(author_id, authors)
 
-        updated_authors = [json.dumps(strawberry.asdict(a)) for a in authors if a.id != author.id]
+        updated_authors = [strawberry_to_dict(a, exclude={'books'}) for a in authors if a.id != author.id]
         async with open(self.__file_path, 'w') as f:
-            await f.writelines(updated_authors)
+            await f.write(json.dumps(updated_authors))

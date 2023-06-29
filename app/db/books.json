@@ -1,27 +1,27 @@
 [
   {
     "id": 1,
-    "author_id": 1,
-    "name": "1984"
+    "name": "1984",
+    "author_id": 1
   },
   {
     "id": 2,
-    "author_id": 1,
-    "name": "Animal Farm: A Fairy Story"
+    "name": "Animal Farm: A Fairy Story",
+    "author_id": 1
   },
   {
     "id": 3,
-    "author_id": 2,
-    "name": "The Fellowship of the Ring"
+    "name": "The Fellowship of the Ring",
+    "author_id": 2
   },
   {
     "id": 4,
-    "author_id": 2,
-    "name": "The Two Towers"
+    "name": "The Two Towers",
+    "author_id": 2
   },
   {
     "id": 5,
-    "author_id": 2,
-    "name": "The Return of the King"
+    "name": "The Return of the King",
+    "author_id": 2
   }
 ]
